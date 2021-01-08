@@ -16,8 +16,8 @@ function moveDown(input, pos) {
 }
 
 for (let index = 1; index < input.length; index++) {
-  const nextElement = input[index];
-  moveDown(nextElement, index * 3);
+  const element = input[index];
+  moveDown(element, index * 3);
 }
 
 // output answer
