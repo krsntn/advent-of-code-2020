@@ -10,7 +10,9 @@ function runProgram(input, preamble) {
     const previousValues = input.slice(index - preamble, index);
 
     if (
-      !previousValues.some((x) => previousValues.includes(input[index] - x))
+      !previousValues.some((x) =>
+        previousValues.filter((y) => y !== x).includes(input[index] - x)
+      )
     ) {
       return input[index];
     }
