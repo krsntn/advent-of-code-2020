@@ -1,52 +1,33 @@
 const fs = require('fs');
 const filename = 'src/day-09/input.txt';
-const input = fs.readFileSync(filename, 'utf8').split('\n');
+const input = fs
+  .readFileSync(filename, 'utf8')
+  .split('\n')
+  .map((x) => +x);
 
-function findInvalidNumber(input, preamble) {
+function runProgram(input, preamble) {
   for (let index = preamble; index < input.length; index++) {
-    let isValidNumber = false;
-    const targetValue = +input[index];
+    const previousValues = input.slice(index - preamble, index);
 
-    const previousValues = [];
-    for (let i = index - preamble; i < index; i++) {
-      previousValues.push(+input[i]);
-    }
+    if (
+      !previousValues.some((x) => previousValues.includes(input[index] - x))
+    ) {
+      const invalidNumber = input[index];
 
-    for (let index = 0; index < previousValues.length; index++) {
-      const curItem = previousValues[index];
-      const remaining = targetValue - curItem;
-      if (curItem !== remaining && previousValues.indexOf(remaining) >= 0) {
-        isValidNumber = true;
-        break;
-      }
-    }
+      for (let i = index - 1; i >= 0; i--) {
+        const range = [];
+        for (let j = i, remaining = invalidNumber; remaining > 0; j--) {
+          range.push(input[j]);
+          remaining -= input[j];
 
-    if (!isValidNumber) {
-      return targetValue;
-    }
-  }
-}
-
-function runProgram(input, invalidNumber) {
-  const filterInput = input.slice(0, input.indexOf(invalidNumber));
-
-  for (let i = filterInput.length - 1; i >= 0; i--) {
-    let smallest, largest;
-    for (let j = i, remaining = invalidNumber; remaining > 0; j--) {
-      const item = +filterInput[j];
-
-      smallest = smallest === undefined || item < smallest ? item : smallest;
-      largest = largest === undefined || item > largest ? item : largest;
-
-      remaining -= item;
-
-      if (remaining === 0 && smallest !== largest) {
-        return smallest + largest;
+          if (remaining === 0) {
+            return Math.min(...range) + Math.max(...range);
+          }
+        }
       }
     }
   }
 }
 
 // output answer
-const invalidNumber = findInvalidNumber(input, 25);
-console.log(runProgram(input, invalidNumber));
+console.log(runProgram(input, 25));
