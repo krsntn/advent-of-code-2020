@@ -6,7 +6,6 @@ const input = fs
   .map((x) => +x);
 
 function runProgram(input, size) {
-  // const arr = input;
   const history = new Map();
 
   for (let i = 1; i <= input.length; i++) {
@@ -21,21 +20,15 @@ function runProgram(input, size) {
       const [prev2, prev1] = obj;
       const newValue = prev1 - prev2;
 
-      if (history.has(newValue)) {
-        history.set(newValue, [
-          history.get(newValue)[1] || history.get(newValue)[0],
-          i + 1,
-        ]);
-      } else {
-        history.set(newValue, [i + 1]);
-      }
+      const prevObj = history.get(newValue);
+      history.set(
+        newValue,
+        prevObj ? [prevObj[1] || prevObj[0], i + 1] : [i + 1]
+      );
       counter = newValue;
     } else {
-      if (history.has(0)) {
-        history.set(0, [history.get(0)[1] || history.get(0)[0], i + 1]);
-      } else {
-        history.set(0, [i + 1]);
-      }
+      const prevObj = history.get(0);
+      history.set(0, prevObj ? [prevObj[1] || prevObj[0], i + 1] : [i + 1]);
       counter = 0;
     }
   }
